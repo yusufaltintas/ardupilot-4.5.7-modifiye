@@ -17,6 +17,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/BoidOut.msg"
   "srv/ArmMotors.srv"
   "srv/ModeSwitch.srv"
+  "msg/Accel.msg"
   DEPENDENCIES geometry_msgs std_msgs
   ADD_LINTER_TESTS
 )

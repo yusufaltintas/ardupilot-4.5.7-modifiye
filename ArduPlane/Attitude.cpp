@@ -154,6 +154,20 @@ float Plane::stabilize_roll_get_roll_out()
     if (control_mode == &mode_stabilize && channel_roll->get_control_in() != 0) {
         disable_integrator = true;
     }
+
+    if(use_roll_override) // Roll override aktif ediliyor
+    {
+        nav_roll_cd = new_nav_roll_cd; 
+    }
+
+    uint32_t now = AP_HAL::millis();
+  
+
+    if (now - last_roll_override_ms > 1500) { // 1500 ms DDS güncellenmezse override kapatılıyor
+  
+        use_roll_override = 0;
+        //gcs().send_text(MAV_SEVERITY_CRITICAL, "DDS ivme durduruldu %d ms komut gelmedi", now - last_roll_override_ms);
+    }
     return rollController.get_servo_out(nav_roll_cd - ahrs.roll_sensor, speed_scaler, disable_integrator,
                                         ground_mode && !(plane.flight_option_enabled(FlightOptions::DISABLE_GROUND_PID_SUPPRESSION)));
 }
