@@ -104,6 +104,10 @@ geometry_msgs_msg_TwistStamped AP_DDS_Client::rx_velocity_control_topic {};
 ardupilot_msgs_msg_GlobalPosition AP_DDS_Client::rx_global_position_control_topic {};
 #endif // AP_DDS_GLOBAL_POS_CTRL_ENABLED
 
+#if AP_DDS_BOID_OUT_ENABLED
+ardupilot_msgs_msg_BoidOut  AP_DDS_Client::tx_boid_out_topic {};
+#endif // AP_DDS_BOID_OUT_ENABLED
+
 // Define the parameter server data members, which are static class scope.
 // If these are created on the stack, then the AP_DDS_Client::on_request
 // frame size is exceeded.
@@ -501,6 +505,30 @@ void AP_DDS_Client::update_topic(geometry_msgs_msg_TwistStamped& msg)
     msg.twist.angular.z = -angular_velocity[2];
 }
 #endif // AP_DDS_LOCAL_VEL_PUB_ENABLED
+
+#if AP_DDS_BOID_OUT_ENABLED
+void AP_DDS_Client::update_topic(ardupilot_msgs_msg_BoidOut& msg)
+{
+    // update_topic(msg.header.stamp);
+    // STRCPY(msg.header.frame_id, BASE_LINK_FRAME_ID);
+
+    auto &ahrs = AP::ahrs();
+    Vector3f position;
+    
+    msg.roll= ahrs.get_roll();
+    msg.pitch = ahrs.get_pitch();
+    msg.yaw = ahrs.get_yaw();
+
+    if (ahrs.get_relative_position_NED_home(position)) {
+        //msg.x = position[1];
+        msg.x = position[0];
+        msg.y = position[1];
+        msg.z = -position[2];
+    }
+    
+}
+#endif // AP_DDS_LOCAL_VEL_PUB_ENABLED
+
 #if AP_DDS_AIRSPEED_PUB_ENABLED
 bool AP_DDS_Client::update_topic(ardupilot_msgs_msg_Airspeed& msg)
 {
@@ -1593,6 +1621,24 @@ void AP_DDS_Client::write_tx_local_velocity_topic()
     }
 }
 #endif // AP_DDS_LOCAL_VEL_PUB_ENABLED
+
+#if AP_DDS_BOID_OUT_ENABLED
+void AP_DDS_Client::write_boid_out_topic()
+{
+    WITH_SEMAPHORE(csem);
+    if (connected) {
+        ucdrBuffer ub {};
+        const uint32_t topic_size = ardupilot_msgs_msg_BoidOut_size_of_topic(&tx_boid_out_topic, 0);
+        uxr_prepare_output_stream(&session, reliable_out, topics[to_underlying(TopicIndex::BOID_OUT_PUB)].dw_id, &ub, topic_size);
+        const bool success = ardupilot_msgs_msg_BoidOut_serialize_topic(&ub, &tx_boid_out_topic);
+        if (!success) {
+            // TODO sometimes serialization fails on bootup. Determine why.
+            // AP_HAL::panic("FATAL: DDS_Client failed to serialize");
+        }
+    }
+}
+#endif // AP_DDS_BOID_OUT_ENABLED
+
 #if AP_DDS_AIRSPEED_PUB_ENABLED
 void AP_DDS_Client::write_tx_local_airspeed_topic()
 {
@@ -1769,6 +1815,15 @@ void AP_DDS_Client::update()
         write_tx_local_velocity_topic();
     }
 #endif // AP_DDS_LOCAL_VEL_PUB_ENABLED
+
+#if AP_DDS_BOID_OUT_ENABLED
+    if (cur_time_ms - last_local_boid_out_time_ms > DELAY_LOCAL_VELOCITY_TOPIC_MS) { // TODO : MS EKLE
+        update_topic(tx_boid_out_topic);
+        last_local_boid_out_time_ms = cur_time_ms;
+        write_boid_out_topic();
+    }
+    #endif // AP_DDS_BOID_OUT_ENABLED
+
 #if AP_DDS_AIRSPEED_PUB_ENABLED
     if (cur_time_ms - last_airspeed_time_ms > DELAY_AIRSPEED_TOPIC_MS) {
         last_airspeed_time_ms = cur_time_ms;

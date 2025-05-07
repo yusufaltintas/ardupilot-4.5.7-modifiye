@@ -27,6 +27,7 @@
  #define AP_DDS_TF_TOPIC(NAME) "rt/" NAME "/tf"
  #define AP_DDS_CMD_VEL_TOPIC(NAME) "rt/" NAME "/cmd_vel"
  #define AP_DDS_CMD_GPS_POSE_TOPIC(NAME) "rt/" NAME "/cmd_gps_pose"
+  #define AP_DDS_BOID_OUT_TOPIC(NAME) "rt/" NAME "/boid_out"
 
 
 // Code generated table based on the enabled topics.
@@ -88,6 +89,10 @@ enum class TopicIndex: uint8_t {
 #if AP_DDS_GLOBAL_POS_CTRL_ENABLED
     GLOBAL_POSITION_SUB,
 #endif // AP_DDS_GLOBAL_POS_CTRL_ENABLED
+
+#if AP_DDS_BOID_OUT_ENABLED
+    BOID_OUT_PUB,
+#endif // AP_DDS_BOID_OUT_ENABLED
 };
 
 static inline constexpr uint8_t to_underlying(const TopicIndex index)
@@ -422,4 +427,23 @@ constexpr struct AP_DDS_Client::Topic_table AP_DDS_Client::topics[] = {
         },
     },
 #endif // AP_DDS_GLOBAL_POS_CTRL_ENABLED
+
+#if AP_DDS_BOID_OUT_ENABLED
+    {
+        .topic_id = to_underlying(TopicIndex::BOID_OUT_PUB),
+        .pub_id = to_underlying(TopicIndex::BOID_OUT_PUB),
+        .sub_id = to_underlying(TopicIndex::BOID_OUT_PUB),
+        .dw_id = uxrObjectId{.id=to_underlying(TopicIndex::BOID_OUT_PUB), .type=UXR_DATAWRITER_ID},
+        .dr_id = uxrObjectId{.id=to_underlying(TopicIndex::BOID_OUT_PUB), .type=UXR_DATAREADER_ID},
+        .topic_rw = Topic_rw::DataWriter,
+        .topic_name = AP_DDS_BOID_OUT_TOPIC(AP_DDS_PARTICIPANT_NAME),
+        .type_name = "ardupilot_msgs::msg::dds_::BoidOut_",
+        .qos = {
+            .durability = UXR_DURABILITY_VOLATILE,
+            .reliability = UXR_RELIABILITY_RELIABLE,
+            .history = UXR_HISTORY_KEEP_LAST,
+            .depth = 5,
+        },
+    },
+#endif // AP_DDS_BOID_OUT_ENABLED
 };

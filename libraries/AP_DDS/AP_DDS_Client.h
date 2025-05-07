@@ -12,6 +12,11 @@
 #include "uxr/client/client.h"
 #include "ucdr/microcdr.h"
 
+#if AP_DDS_BOID_OUT_ENABLED
+#include "ardupilot_msgs/msg/BoidOut.h"
+#endif // AP_DDS_BOID_OUT_ENABLED
+
+
 #if AP_DDS_GLOBAL_POS_CTRL_ENABLED
 #include "ardupilot_msgs/msg/GlobalPosition.h"
 #endif // AP_DDS_GLOBAL_POS_CTRL_ENABLED
@@ -232,6 +237,17 @@ private:
     void write_static_transforms();
     static void populate_static_transforms(tf2_msgs_msg_TFMessage& msg);
 #endif // AP_DDS_STATIC_TF_PUB_ENABLED
+
+#if AP_DDS_BOID_OUT_ENABLED
+
+    // The last ms timestamp AP_DDS wrote a Clock message
+    uint64_t last_local_boid_out_time_ms;
+    //! @brief Serialize the current clock and publish to the IO stream(s)
+    void write_boid_out_topic();
+    static void update_topic(ardupilot_msgs_msg_BoidOut& msg);
+
+    static ardupilot_msgs_msg_BoidOut tx_boid_out_topic;
+#endif 
 
 #if AP_DDS_JOY_SUB_ENABLED
     // incoming joystick data
