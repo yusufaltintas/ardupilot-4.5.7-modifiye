@@ -84,7 +84,54 @@ bool AP_DDS_External_Control::handle_velocity_control(geometry_msgs_msg_TwistSta
 
     return false;
 }
+bool AP_DDS_External_Control::handle_accel_control(ardupilot_msgs_msg_Accel& cmd_acc)
+{
 
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "veri: %f", (double)cmd_acc.accel_mig.linear.x);
+    
+    auto *external_control = AP::externalcontrol();
+    if (external_control == nullptr) {
+        return false;
+    }
+
+    
+        // Convert commands from ENU to NED frame
+        Vector3f accel_mig {
+            float(cmd_acc.accel_mig.linear.y),// Convert commands from ENU to NED frame
+            float(cmd_acc.accel_mig.linear.x),
+            float(-cmd_acc.accel_mig.linear.z)};
+         Vector3f accel_sep {
+            float(cmd_acc.accel_sep.linear.y),
+            float(cmd_acc.accel_sep.linear.x),
+            float(-cmd_acc.accel_sep.linear.z)};   
+        Vector3f accel_coh {
+            float(cmd_acc.accel_coh.linear.y),
+            float(cmd_acc.accel_coh.linear.x),
+            float(-cmd_acc.accel_coh.linear.z)};
+        Vector3f accel_alig {
+            float(cmd_acc.accel_alig.linear.y),
+            float(cmd_acc.accel_alig.linear.x),
+            float(-cmd_acc.accel_alig.linear.z)};
+    
+    gcs().send_text(MAV_SEVERITY_CRITICAL, "mig_x: %f", (double)cmd_acc.accel_mig.linear.x);
+
+    gcs().send_text(MAV_SEVERITY_CRITICAL, "mig_y: %f", (double)cmd_acc.accel_mig.linear.y);
+    
+    gcs().send_text(MAV_SEVERITY_CRITICAL, "sep_x: %f", (double)cmd_acc.accel_sep.linear.x);
+    
+    gcs().send_text(MAV_SEVERITY_CRITICAL, "sep_y: %f", (double)cmd_acc.accel_sep.linear.y);
+    
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "coh_x: %f", (double)cmd_acc.accel_coh.linear.x);
+    
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "coh_y: %f", (double)cmd_acc.accel_coh.linear.y);
+    
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "alig_x: %f", (double)cmd_acc.accel_alig.linear.x);
+    
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "alig_y: %f", (double)cmd_acc.accel_alig.linear.y);
+
+    return external_control->set_linear_acceleration(accel_mig, accel_sep, accel_coh, accel_alig);
+
+}
 bool AP_DDS_External_Control::arm(AP_Arming::Method method, bool do_arming_checks)
 {
     auto *external_control = AP::externalcontrol();

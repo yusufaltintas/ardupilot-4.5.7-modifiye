@@ -386,7 +386,7 @@ private:
     // The calculated airspeed to use in FBW-B.  Also used in higher modes for insuring min ground speed is met.
     // Also used for flap deployment criteria.  Centimeters per second.
     int32_t target_airspeed_cm;
-    int32_t new_airspeed_cm = -1;  //temp variable for AUTO and GUIDED mode speed changes
+    int32_t new_airspeed_cm = aparm.airspeed_cruise;;  // başlangıçta mantıklı bir değerde olsun diye
 
     // The difference between current and desired airspeed.  Used in the pitch controller.  Meters per second.
     float airspeed_error;
@@ -626,6 +626,11 @@ private:
     // Navigation control variables
     // The instantaneous desired bank angle.  Hundredths of a degree
     int32_t nav_roll_cd;
+
+    int32_t new_nav_roll_cd = 0; // Boidde üretilen hedef roll açısının kullanılaması için gerekli, new_airspeed mantığında eklendi
+    bool use_roll_override = 0; // 1 olduğunda new_roll_cd kullanılıyor
+    uint32_t last_roll_override_ms; // roll overrride komudu sayacı için değişken, belli bir sayıyı geçince use_roll_override = 0 oluyor 
+    //ayrıca en son ne zaman dds ile boid komudu geldiğini de bu değişkenden anlayabiliyoruz
 
     // The instantaneous desired pitch angle.  Hundredths of a degree
     int32_t nav_pitch_cd;

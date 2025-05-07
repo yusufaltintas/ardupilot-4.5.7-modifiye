@@ -24,7 +24,9 @@ public:
     virtual bool set_linear_velocity_and_yaw_rate(const Vector3f &linear_velocity, float yaw_rate_rads) WARN_IF_UNUSED {
         return false;
     }
-
+    virtual bool set_linear_acceleration(const Vector3f &accel_mig,const Vector3f &accel_sep,const Vector3f &accel_coh,const Vector3f &accel_alig)  WARN_IF_UNUSED {
+        return false;
+    }
     /*
         Sets the target global position with standard guided mode behavior.
     */

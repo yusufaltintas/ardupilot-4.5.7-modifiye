@@ -4,6 +4,7 @@
 #if AP_DDS_ENABLED
 #include <uxr/client/util/ping.h>
 
+#include <GCS_MAVLink/GCS.h>
 #include <AP_GPS/AP_GPS.h>
 #include <AP_HAL/AP_HAL.h>
 #include <RC_Channel/RC_Channel.h>
@@ -103,6 +104,10 @@ geometry_msgs_msg_TwistStamped AP_DDS_Client::rx_velocity_control_topic {};
 #if AP_DDS_GLOBAL_POS_CTRL_ENABLED
 ardupilot_msgs_msg_GlobalPosition AP_DDS_Client::rx_global_position_control_topic {};
 #endif // AP_DDS_GLOBAL_POS_CTRL_ENABLED
+
+#if AP_DDS_ACC_CTRL_ENABLED
+ardupilot_msgs_msg_Accel  AP_DDS_Client::rx_accel_control_topic {};
+#endif // AP_DDS_ACC_CTRL_ENABLED
 
 // Define the parameter server data members, which are static class scope.
 // If these are created on the stack, then the AP_DDS_Client::on_request
@@ -865,17 +870,37 @@ void AP_DDS_Client::on_topic(uxrSession* uxr_session, uxrObjectId object_id, uin
         if (success == false) {
             break;
         }
-
-#if AP_EXTERNAL_CONTROL_ENABLED
-        if (!AP_DDS_External_Control::handle_global_position_control(rx_global_position_control_topic)) {
-            // TODO #23430 handle global position control failure through rosout, throttled.
-        }
-#endif // AP_EXTERNAL_CONTROL_ENABLED
-        break;
-    }
+        #if AP_EXTERNAL_CONTROL_ENABLED
+        //gcs().send_text(MAV_SEVERITY_CRITICAL, "girdim poz %5.3f", (double)3.142f);
+                if (!AP_DDS_External_Control::handle_global_position_control(rx_global_position_control_topic)) {
+                    // TODO #23430 handle global position control failure through rosout, throttled.
+                }
+                #if AP_EXTERNAL_CONTROL_ENABLED
+                //gcs().send_text(MAV_SEVERITY_CRITICAL, "girdim accel %5.3f", (double)3.142f);
+                        if (!AP_DDS_External_Control::handle_global_position_control(rx_global_position_control_topic)) {
+                            // TODO #23430 handle global position control failure through rosout, throttled.
+                        }
+                #endif // AP_EXTERNAL_CONTROL_ENABLED
+        #endif // AP_EXTERNAL_CONTROL_ENABLED
+                break;
+            }
 #endif // AP_DDS_GLOBAL_POS_CTRL_ENABLED
-    }
+#if AP_DDS_ACC_CTRL_ENABLED
+    case topics[to_underlying(TopicIndex::ACCEL_CONTROL_SUB)].dr_id.id: {
+        const bool success = ardupilot_msgs_msg_Accel_deserialize_topic(ub, &rx_accel_control_topic);
+        if (success == false) {
+            break;
+        }
+            if (!AP_DDS_External_Control::handle_accel_control(rx_accel_control_topic)) {
+        
+        }
+        
+ 
+            break;
+            }
+#endif // AP_DDS_ACC_CTRL_ENABLED
 
+        }
 }
 
 /*
