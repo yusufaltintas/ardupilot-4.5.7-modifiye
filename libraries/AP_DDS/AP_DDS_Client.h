@@ -317,6 +317,8 @@ private:
 public:
     ~AP_DDS_Client();
 
+    bool hedef_degistir; //guided modda yeni target geldiğinde /goal_lla topicini günceller.
+
     bool start(void);
     void main_loop(void);
 

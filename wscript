@@ -441,7 +441,7 @@ configuration in order to save typing.
                  type='int',
                  default=0,
                  help='zero time on boot in microseconds')
-    g.add_option('--dds-udp_port_swarm', type='int', default=2019,
+    g.add_option('--dds-port', type='int', default=2019,
                     help="Set DDS port name (default: 2019)")
     g.add_option('--dds-name', type='string', default="ap",
                     help="Set DDS participant name (default: ap)")

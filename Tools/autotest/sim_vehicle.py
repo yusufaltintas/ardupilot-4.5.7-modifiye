@@ -410,6 +410,16 @@ def do_build(opts, frame_options):
 
     if opts.enable_dds:
         cmd_configure.append("--enable-dds")
+        cmd_configure.append(f"--dds-name={dds_name}") # DDS katılımcı adı ekleniyor
+        cmd_configure.append(f"--dds-port={dds_port}") # DDS port adı ekleniyor
+
+    if opts.dds_name:
+        #AP_DDS_PARTICIPANT_NAME makrosunu derleyiciye ekle
+        cmd_configure.append(f"CFLAGS=-DAP_DDS_PARTICIPANT_NAME={opts.dds_name}")
+     # --dds-name parametresi eklemek
+    if opts.dds_port:
+        #UDP_PORT_SWARM makrosunu derleyiciye ekle
+        cmd_configure.append(f"CFLAGS=-UDP_PORT_SWARM={opts.dds_port}")
 
     if opts.disable_networking:
         cmd_configure.append("--disable-networking")
@@ -1341,6 +1351,13 @@ group_sim.add_option("--enable-ppp", action='store_true',
 group_sim.add_option("--enable-networking-tests", action='store_true',
                      help="Enable networking tests")
 
+group_sim.add_option("--dds-name", type=str,
+                     default="ap",  # Varsayılan olarak "ap" kullanabiliriz
+                     help="Set the DDS participant name. Defaults to 'ap'.")
+group_sim.add_option("--dds-port", type='int',
+                      default=2019,  # Varsayılan olarak "ap" kullanabiliriz
+                      help="Set DDS port name (default: 2019)")
+
 parser.add_option_group(group_sim)
 
 
@@ -1397,6 +1414,11 @@ if cmd_opts.list_frame:
 
 # clean up processes at exit:
 atexit.register(kill_tasks)
+
+dds_name = cmd_opts.dds_name
+# clean up processes at exit:
+atexit.register(kill_tasks)
+dds_port = cmd_opts.dds_port
 
 progress("Start")
 

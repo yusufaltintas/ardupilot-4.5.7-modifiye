@@ -1,6 +1,10 @@
 #include "mode.h"
 #include "Plane.h"
 
+#if AP_DDS_ENABLED
+#include "AP_DDS/AP_DDS_Client.h"  
+#endif
+
 bool ModeGuided::_enter()
 {
     plane.guided_throttle_passthru = false;
@@ -105,6 +109,12 @@ bool ModeGuided::handle_guided_request(Location target_loc)
         target_loc.alt += plane.home.alt;
         target_loc.relative_alt = 0;
     }
+
+    #if AP_DDS_ENABLED
+
+    plane.dds_client->hedef_degistir = true;
+
+    #endif
 
     plane.set_guided_WP(target_loc);
 

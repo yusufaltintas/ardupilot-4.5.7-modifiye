@@ -178,3 +178,7 @@
 #ifndef AP_DDS_PARTICIPANT_NAME
 #define AP_DDS_PARTICIPANT_NAME "ap"
 #endif
+
+#ifndef UDP_PORT_SWARM
+#define UDP_PORT_SWARM 2019
+#endif

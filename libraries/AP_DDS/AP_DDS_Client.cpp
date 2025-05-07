@@ -132,7 +132,7 @@ const AP_Param::GroupInfo AP_DDS_Client::var_info[] {
     // @Range: 1 65535
     // @RebootRequired: True
     // @User: Standard
-    AP_GROUPINFO("_UDP_PORT", 2, AP_DDS_Client, udp.port, 2019),
+    AP_GROUPINFO("_UDP_PORT", 2, AP_DDS_Client, udp.port, UDP_PORT_SWARM),
 
     // @Group: _IP
     // @Path: ../AP_Networking/AP_Networking_address.cpp
@@ -619,6 +619,8 @@ bool AP_DDS_Client::update_topic_goal(geographic_msgs_msg_GeoPointStamped& msg)
     msg.position.longitude = target_loc.lng * 1e-7;
     msg.position.altitude = target_loc.alt * 1e-2;
 
+
+/*
     // Check whether the goal has changed or if the topic has never been published.
     const double tolerance_lat_lon = 1e-8; // One order of magnitude smaller than the target's resolution.
     const double distance_alt = 1e-3;
@@ -633,7 +635,8 @@ bool AP_DDS_Client::update_topic_goal(geographic_msgs_msg_GeoPointStamped& msg)
         return true;
     } else {
         return false;
-    }
+    }*/
+   return true;
 }
 #endif // AP_DDS_GOAL_PUB_ENABLED
 
@@ -1811,10 +1814,16 @@ void AP_DDS_Client::update()
     }
 #endif // AP_DDS_GPS_GLOBAL_ORIGIN_PUB_ENABLED
 #if AP_DDS_GOAL_PUB_ENABLED
-    if (cur_time_ms - last_goal_time_ms > DELAY_GOAL_TOPIC_MS) {
-        if (update_topic_goal(goal_topic)) {
-            write_goal_topic();
-        }
+if (hedef_degistir) { //cur_time_ms - last_goal_time_ms > DELAY_GOAL_TOPIC_MS
+    if (update_topic_goal(goal_topic)) {
+
+
+        write_goal_topic();
+
+        GCS_SEND_TEXT(MAV_SEVERITY_INFO, "hedef konum değiştirildi %d", hedef_degistir);
+
+        hedef_degistir = false;
+    }
         last_goal_time_ms = cur_time_ms;
     }
 #endif // AP_DDS_GOAL_PUB_ENABLED

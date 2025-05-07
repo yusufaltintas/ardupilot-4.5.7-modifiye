@@ -36,6 +36,14 @@ def configure(cfg):
     cfg.env.append_value('GIT_SUBMODULES', 'Micro-XRCE-DDS-Client')
     cfg.env.append_value('GIT_SUBMODULES', 'Micro-CDR')
 
+    dds_name = cfg.options.dds_name  # Komut satırından gelen DDS adını al
+    cfg.env.DEFINES.append(f'AP_DDS_PARTICIPANT_NAME="{dds_name}"')  # C kodu içinde kullanılacak
+
+
+
+    dds_port = cfg.options.dds_port  # Komut satırından gelen PORT adını al
+    cfg.env.DEFINES.append(f'UDP_PORT_SWARM={dds_port}')  # C kodu içinde kullanılacak
+
 
 def build(bld):
     config_h_in = [
