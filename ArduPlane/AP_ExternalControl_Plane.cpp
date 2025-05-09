@@ -43,7 +43,7 @@ bool AP_ExternalControl_Plane::set_linear_acceleration(const Vector3f &accel_mig
 
 
   Vector2f body_accel_mig_converted; // migration için y ekseni bazlı kontrol geri yönde z ekseni yok daha
-    /*if(body_accel_mig.x < 0 && body_accel_mig.y < 0){
+    if(body_accel_mig.x < 0 && body_accel_mig.y < 0){
 
       body_accel_mig_converted = {0,-sqrt(body_accel_mig.x*body_accel_mig.x + body_accel_mig.y*body_accel_mig.y)};
 
@@ -53,8 +53,8 @@ bool AP_ExternalControl_Plane::set_linear_acceleration(const Vector3f &accel_mig
     }
     else{
       body_accel_mig_converted = {body_accel_mig.x,body_accel_mig.y};
-    } */
-  body_accel_mig_converted = {body_accel_mig.x,body_accel_mig.y}; // üstteki kısım test edilcek
+    } 
+  //body_accel_mig_converted = {body_accel_mig.x,body_accel_mig.y}; // üstteki kısım test edilcek
   total_accel.x = body_accel_sep.x + body_accel_coh.x;
   total_accel.y = body_accel_mig_converted.y + body_accel_sep.y + body_accel_coh.y + body_accel_alig.y;
   total_accel.z = body_accel_sep.z + body_accel_coh.z + body_accel_alig.z; // body_accel_mig_converted 2D o yüzden yok burada şuan
