@@ -105,15 +105,12 @@ geometry_msgs_msg_TwistStamped AP_DDS_Client::rx_velocity_control_topic {};
 ardupilot_msgs_msg_GlobalPosition AP_DDS_Client::rx_global_position_control_topic {};
 #endif // AP_DDS_GLOBAL_POS_CTRL_ENABLED
 
-<<<<<<< HEAD
 #if AP_DDS_BOID_OUT_ENABLED
 ardupilot_msgs_msg_BoidOut  AP_DDS_Client::tx_boid_out_topic {};
 #endif // AP_DDS_BOID_OUT_ENABLED
-=======
 #if AP_DDS_ACC_CTRL_ENABLED
 ardupilot_msgs_msg_Accel  AP_DDS_Client::rx_accel_control_topic {};
 #endif // AP_DDS_ACC_CTRL_ENABLED
->>>>>>> v1.0.23
 
 // Define the parameter server data members, which are static class scope.
 // If these are created on the stack, then the AP_DDS_Client::on_request

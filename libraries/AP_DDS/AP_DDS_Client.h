@@ -12,17 +12,14 @@
 #include "uxr/client/client.h"
 #include "ucdr/microcdr.h"
 
-<<<<<<< HEAD
 #if AP_DDS_BOID_OUT_ENABLED
 #include "ardupilot_msgs/msg/BoidOut.h"
 #endif // AP_DDS_BOID_OUT_ENABLED
 
-=======
 
 #if AP_DDS_ACC_CTRL_ENABLED
 #include "ardupilot_msgs/msg/Accel.h"
 #endif // AP_DDS_ACC_CTRL_ENABLED
->>>>>>> v1.0.23
 
 #if AP_DDS_GLOBAL_POS_CTRL_ENABLED
 #include "ardupilot_msgs/msg/GlobalPosition.h"
