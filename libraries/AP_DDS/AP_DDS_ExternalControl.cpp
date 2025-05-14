@@ -95,31 +95,31 @@ bool AP_DDS_External_Control::handle_accel_control(ardupilot_msgs_msg_Accel& cmd
     }
 
     
-        // Convert commands from ENU to NED frame
+        // commands from ENU frame
         Vector3f accel_mig {
-            float(cmd_acc.accel_mig.linear.y),// Convert commands from ENU to NED frame
+            float(cmd_acc.accel_mig.linear.y),
             float(cmd_acc.accel_mig.linear.x),
-            float(-cmd_acc.accel_mig.linear.z)};
+            float(cmd_acc.accel_mig.linear.z)};
          Vector3f accel_sep {
             float(cmd_acc.accel_sep.linear.y),
             float(cmd_acc.accel_sep.linear.x),
-            float(-cmd_acc.accel_sep.linear.z)};   
+            float(cmd_acc.accel_sep.linear.z)};   
         Vector3f accel_coh {
             float(cmd_acc.accel_coh.linear.y),
             float(cmd_acc.accel_coh.linear.x),
-            float(-cmd_acc.accel_coh.linear.z)};
+            float(cmd_acc.accel_coh.linear.z)};
         Vector3f accel_alig {
             float(cmd_acc.accel_alig.linear.y),
             float(cmd_acc.accel_alig.linear.x),
-            float(-cmd_acc.accel_alig.linear.z)};
+            float(cmd_acc.accel_alig.linear.z)};
     
-    gcs().send_text(MAV_SEVERITY_CRITICAL, "mig_x: %f", (double)cmd_acc.accel_mig.linear.x);
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "mig_x: %f", (double)cmd_acc.accel_mig.linear.x);
 
-    gcs().send_text(MAV_SEVERITY_CRITICAL, "mig_y: %f", (double)cmd_acc.accel_mig.linear.y);
+    gcs().send_text(MAV_SEVERITY_CRITICAL, "mig_z: %f", (double)cmd_acc.accel_mig.linear.z);
     
-    gcs().send_text(MAV_SEVERITY_CRITICAL, "sep_x: %f", (double)cmd_acc.accel_sep.linear.x);
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "sep_x: %f", (double)cmd_acc.accel_sep.linear.x);
     
-    gcs().send_text(MAV_SEVERITY_CRITICAL, "sep_y: %f", (double)cmd_acc.accel_sep.linear.y);
+    //gcs().send_text(MAV_SEVERITY_CRITICAL, "sep_y: %f", (double)cmd_acc.accel_sep.linear.y);
     
     //gcs().send_text(MAV_SEVERITY_CRITICAL, "coh_x: %f", (double)cmd_acc.accel_coh.linear.x);
     

@@ -630,6 +630,8 @@ private:
     int32_t new_nav_roll_cd = 0; // Boidde üretilen hedef roll açısının kullanılaması için gerekli, new_airspeed mantığında eklendi
     bool use_roll_override = 0; // 1 olduğunda new_roll_cd kullanılıyor
     uint32_t last_roll_override_ms; // roll overrride komudu sayacı için değişken, belli bir sayıyı geçince use_roll_override = 0 oluyor 
+    bool acc_dds_overriding = 0; // dds son 1 saniye içinde acc_cmd mesajı aldıysa bu değişken 1 olacak
+    uint32_t last_acc_dds_ms; // en son gelen cmd_acc mesajı zamanı
     //ayrıca en son ne zaman dds ile boid komudu geldiğini de bu değişkenden anlayabiliyoruz
 
     // The instantaneous desired pitch angle.  Hundredths of a degree

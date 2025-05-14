@@ -131,7 +131,7 @@ void ModeGuided::set_radius_and_direction(const float radius, const bool directi
 void ModeGuided::update_target_altitude()
 {
 #if OFFBOARD_GUIDED == ENABLED
-    if (((plane.guided_state.target_alt_time_ms != 0) || plane.guided_state.target_alt > -0.001 )) { // target_alt now defaults to -1, and _time_ms defaults to zero.
+    if (((plane.guided_state.target_alt_time_ms != 0) || plane.guided_state.target_alt > -0.001 ) && !plane.acc_dds_overriding) { // target_alt now defaults to -1, and _time_ms defaults to zero.
         // offboard altitude demanded
         uint32_t now = AP_HAL::millis();
         float delta = 1e-3f * (now - plane.guided_state.target_alt_time_ms);
@@ -150,9 +150,11 @@ void ModeGuided::update_target_altitude()
         plane.guided_state.last_target_alt = temp.alt;
         plane.set_target_altitude_location(temp);
         plane.altitude_error_cm = plane.calc_altitude_error_cm();
-    } else 
+        gcs().send_text(MAV_SEVERITY_CRITICAL, "guided offboard aktif");
+    } else if (!plane.acc_dds_overriding)
 #endif // OFFBOARD_GUIDED == ENABLED
         {
         Mode::update_target_altitude();
+        gcs().send_text(MAV_SEVERITY_CRITICAL, "guided aktif");
     }
 }

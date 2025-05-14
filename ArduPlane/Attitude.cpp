@@ -161,7 +161,12 @@ float Plane::stabilize_roll_get_roll_out()
     }
 
     uint32_t now = AP_HAL::millis();
+
+    if (now - last_acc_dds_ms > 1000) { // TODO : bunu farklı bir loopta hesapla
   
+        acc_dds_overriding = 0;
+        
+    }
 
     if (now - last_roll_override_ms > 1500) { // 1500 ms DDS güncellenmezse override kapatılıyor
   
